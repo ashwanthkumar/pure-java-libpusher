@@ -1,7 +1,5 @@
 
 
-import com.google.appengine.api.urlfetch.HTTPResponse;
-
 /**
  * An instance of this class can be used to prepopulate properties (event or channel name) with default values
  * 
@@ -45,7 +43,7 @@ public class PusherRequest {
 	 * @param jsonData
 	 * @return
 	 */
-	public HTTPResponse triggerPush(String jsonData){
+	public String triggerPush(String jsonData){
 		return Pusher.triggerPush(channelName, eventName, jsonData);
 	}	
 
@@ -55,7 +53,7 @@ public class PusherRequest {
 	 * @param eventName
 	 * @return
 	 */
-	public HTTPResponse triggerPush(String jsonData, String eventName){	
+	public String triggerPush(String jsonData, String eventName){	
 		return Pusher.triggerPush(channelName, eventName, jsonData);
 	}
 	
@@ -66,7 +64,7 @@ public class PusherRequest {
 	 * @param socketId
 	 * @return
 	 */
-	public HTTPResponse triggerPush(String jsonData, String eventName, String socketId){	
+	public String triggerPush(String jsonData, String eventName, String socketId){	
 		return Pusher.triggerPush(channelName, eventName, jsonData, socketId);
 	}
 

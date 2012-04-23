@@ -1,25 +1,22 @@
 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.HttpURLConnection;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.mortbay.log.Log;
-
-import com.google.appengine.api.urlfetch.HTTPHeader;
-import com.google.appengine.api.urlfetch.HTTPMethod;
-import com.google.appengine.api.urlfetch.HTTPRequest;
-import com.google.appengine.api.urlfetch.HTTPResponse;
-import com.google.appengine.api.urlfetch.URLFetchService;
-import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 
 /**
  * Static class to send messages to Pusher's REST API.
@@ -223,7 +220,7 @@ public class Pusher {
      * @param jsonData
      * @return
      */
-    public static HTTPResponse triggerPush(String channel, String event, String jsonData){
+    public static String triggerPush(String channel, String event, String jsonData){
     	return triggerPush(channel, event, jsonData, "");
     }
     
@@ -235,7 +232,7 @@ public class Pusher {
      * @param socketId
      * @return
      */
-    public static HTTPResponse triggerPush(String channel, String event, String jsonData, String socketId){
+    public static String triggerPush(String channel, String event, String jsonData, String socketId){
     	//Build URI path
     	String uriPath = buildURIPath(channel);
     	//Build query
@@ -244,21 +241,31 @@ public class Pusher {
     	String signature = buildAuthenticationSignature(uriPath, query);
     	//Build URI
     	URL url = buildURI(uriPath, query, signature);
-    	
-    	//Create Google APP Engine Fetch URL service and request
-		URLFetchService urlFetchService = URLFetchServiceFactory.getURLFetchService();
-		HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
-		request.addHeader(new HTTPHeader("Content-Type", "application/json"));
-		request.setPayload(jsonData.getBytes());
+		InputStream input = null;
+		OutputStream output = null;
+    	StringBuffer response = new StringBuffer();
 		
-		//Start request
 		try {
-			return urlFetchService.fetch(request);
-		} catch (IOException e) {
-			//Log warning
-			Log.warn("Pusher request could not be send to the following URI " + url.toString());
-			return null;
-		}    	
+			//Create Google APP Engine Fetch URL service and request
+			HttpURLConnection  httpConnection = (HttpURLConnection) url.openConnection();
+			httpConnection.setRequestMethod("POST");
+			httpConnection.setRequestProperty("Content-Type", "application/json");
+			output = httpConnection.getOutputStream();
+			output.write(jsonData.getBytes("UTF-8"));
+			input = httpConnection.getInputStream();
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			String line = "";
+			while((line = reader.readLine()) != null) {
+				response.append(line);
+			}
+			reader.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Send the response
+		return response.toString();
     }
 
 }
