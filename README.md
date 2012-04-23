@@ -1,7 +1,9 @@
-Pusher Java classes for Google App Engine
-=========================================
+Pusher Java classes for <s>Google App Engine</s> Any Java Application
+=====================================================================
 
-This Java classes can be used to communicate very easily with the Pusher REST API (http://www.pusherapp.com) from any Google App engine Web application.
+All copyrights and credits go to the original author. I just forked the project to make sure it runs normally with zero-dependencies on my java-openjdk-1.6 Java Project. 
+
+These Java classes can be used to communicate very easily with the Pusher REST API (http://www.pusherapp.com) from any <s>Google App engine Web </s> Java application.
 
 Get Started
 -----------
