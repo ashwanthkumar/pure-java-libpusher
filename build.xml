@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<project name="PusherJava" default="main">
+	
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="version" value="0.0.1" />
+	
+	<target name="main">
+		<mkdir dir="${build.dir}" />
+
+		<!-- Compile the classes -->
+		<javac srcdir="${basedir}" destdir="${build.dir}">
+		</javac>
+		 
+		<!-- Build JAR so that we can pack it with it -->
+		<jar destfile="${basedir}/libpusher-${version}.jar" basedir="${build.dir}">
+      <manifest>
+			<attribute name="Built-By" value="Ashwanth Kumar"/>
+			<attribute name="Implementation-Version" value="${version}"/>
+			<attribute name="Original-Author" value="Stephan Scheuermann" />
+      </manifest>
+		</jar>
+	</target>
+</project>
